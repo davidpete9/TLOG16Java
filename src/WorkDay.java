@@ -6,8 +6,6 @@ import java.util.List;
 public class WorkDay {
 
     private static final long DEFAULT_MIN_PER_DAY = 450;
-    private static final int FIRST_WEEKDAY = DayOfWeek.MONDAY.getValue();
-    private static final int LAST_WEEKDAY = DayOfWeek.FRIDAY.getValue();
 
     private List<Task> tasks;
     private LocalDate actualDay;
@@ -39,26 +37,17 @@ public class WorkDay {
         return this.requiredMinPerDay-this.sumPerDay;
     }
 
-    public boolean isSeparatedTime(Task task) {
-        return tasks.stream().noneMatch(t -> hasCommonTimeWith(t, task));
-    }
-
-    private boolean hasCommonTimeWith(Task actualTask, Task testedTask) {
-        return !actualTask.getEndTime().isBefore(testedTask.getStartTime()) && !testedTask.getEndTime().isBefore(actualTask.getStartTime());
-    }
-
-    public void addTask(Task t) {
-        if (t.isMultipleQuarterHour() && this.isSeparatedTime(t)) {
-            this.tasks.add(t);
+    public void addTask(Task task) {
+        if (Util.isMultipleQuarterHour(this.requiredMinPerDay) && Util.isSeparatedTime(task, this.tasks)) {
+            this.tasks.add(task);
         }
         else {
             //TODO - later
         }
     }
 
-    public boolean isWeekday() {
-        int actualDayOfWeek = this.actualDay.getDayOfWeek().getValue();
-        return actualDayOfWeek >= WorkDay.FIRST_WEEKDAY && actualDayOfWeek <= WorkDay.LAST_WEEKDAY;
+    public List<Task> getTasks() {
+        return tasks;
     }
 
     public LocalDate getActualDay() {
@@ -73,4 +62,11 @@ public class WorkDay {
         return sumPerDay;
     }
 
+    public void setActualDay(int year, int month, int day) {
+        this.actualDay = LocalDate.of(year, month, day);
+    }
+
+    public void setRequiredMinPerDay(long requiredMinPerDay) {
+        this.requiredMinPerDay = requiredMinPerDay;
+    }
 }

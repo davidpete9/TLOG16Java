@@ -1,10 +1,13 @@
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.regex.Pattern;
 
 public class Task {
 
-    private static final String TASKID_REGEX = "^(\\d{4})|^(?i:LT-\\d{4})";
+    private static final String REDMINE_TASKID_REGEX = "^\\d{4}";
+    private static final String LT_TASKID_REGEX = "^LT-\\d{4}";
+
 
     private String taskId;
     private LocalTime startTime;
@@ -25,16 +28,24 @@ public class Task {
         this.endTime = LocalTime.parse(endTimeAsString);
     }
 
+    public Task(String taskId) {
+        this.taskId = taskId;
+    }
+
     public long getMinPerTask() {
         return Duration.between(this.startTime, this.endTime).toMinutes();
     }
 
     public boolean isValidTaskId() {
-        return Pattern.compile(Task.TASKID_REGEX).matcher(this.taskId).matches();
+        return this.isValidLTTaskId() || this.isValidRedmineTaskId();
     }
 
-    public boolean isMultipleQuarterHour() {
-        return this.getMinPerTask() % 15 == 0;
+    private boolean isValidRedmineTaskId() {
+       return  Pattern.compile(Task.REDMINE_TASKID_REGEX).matcher(this.taskId).matches();
+    }
+
+    private boolean isValidLTTaskId() {
+        return  Pattern.compile(Task.LT_TASKID_REGEX).matcher(this.taskId).matches();
     }
 
     public String getTaskId() {
@@ -51,5 +62,29 @@ public class Task {
 
     public String getComment() {
         return comment;
+    }
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
+
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setStartTime(int hour, int min) {
+        this.startTime = LocalTime.of(hour, min);
+    }
+
+    public void setEndTime(LocalTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public void setEndTime(int hour, int min) {
+        this.endTime = LocalTime.of(hour, min);
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }
