@@ -1,3 +1,5 @@
+package precognox;
+
 import java.time.YearMonth;
 import java.util.List;
 

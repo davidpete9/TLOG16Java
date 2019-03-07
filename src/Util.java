@@ -1,5 +1,9 @@
+package precognox;
+
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 public class Util {
@@ -22,5 +26,10 @@ public class Util {
 
     public static boolean isMultipleQuarterHour(long minutes) {
         return minutes % 15 == 0;
+    }
+    
+    public static LocalTime roundToMultipleQuarterHour(LocalTime startTime, LocalTime endTime) {
+       long minutes = Duration.between(startTime, endTime).toMinutes();
+       return startTime.plusMinutes(Math.round(minutes / 15.0f) * 15);
     }
 }

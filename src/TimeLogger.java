@@ -1,3 +1,5 @@
+package precognox;
+
 import java.util.List;
 
 public class TimeLogger {
